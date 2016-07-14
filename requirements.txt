@@ -1,0 +1,2 @@
+PyMySQL==0.7.5
+orator==0.8.2
