@@ -6,6 +6,7 @@ def main(payload, evento):
     if payload and evento:
         trata = payload.replace("'", '"').replace('*space*', " ")
         data = json.loads(trata)
+
         try:
             processaEvento(data).processaEvento(evento)
             response['success'] = True

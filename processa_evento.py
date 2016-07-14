@@ -7,8 +7,10 @@ class processaEvento:
     def __init__(self, data):
         self.data = data
 
+    #Processa eventos no repositorio no Github
     def processaEvento(self, evento):
 
+        #Novo Pull Request
         if evento == 'pull_request':
             dadosPullRequest = processaDados().getDadosPullRequest(self.data)
             data = self.data
@@ -18,6 +20,8 @@ class processaEvento:
                 dataHora = pull['created_at'][0:10] + ' ' + pull['created_at'][11:-4]
             else:
                 raise Exception("Payload incompleto ou em formato incorreto.")
+
+        # Novo Push
         elif evento == 'push':
             ""
         else:
