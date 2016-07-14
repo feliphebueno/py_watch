@@ -24,7 +24,7 @@ class Conexao():
             if link in self.databases:
                 database = self.databases[link]
                 return DatabaseManager({
-                    'mysql': {
+                    database['driver']: {
                         'driver'    : database['driver'],
                         'host'      : database['host'],
                         'database'  : database['database'],
