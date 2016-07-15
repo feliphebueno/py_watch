@@ -20,3 +20,11 @@ class processaSql:
     def getRepositorioSql(self, id):
         qb = self.con.qb('prod_t1')
         return qb.table('repositorio').where('repositorioId', id)
+
+    def getCommitSql(self, sha):
+        qb = self.con.qb('prod_t1')
+        return qb.table('repositorio_branch_commit').where('repositorioBranchCommitSha', sha)
+
+    def getBranchSql(self, name):
+        qb = self.con.qb('prod_t1')
+        return qb.table('repositorio_branch').where('repositorioBranchNome', name)

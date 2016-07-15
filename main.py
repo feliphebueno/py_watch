@@ -38,28 +38,38 @@ response = {'success': "", 'response': ""}
 def main(payload, evento):
     if payload and evento:
         trata = payload.replace("'", '"').replace('*space*', " ")
-        data = json.loads(trata)
-        try:
-            print processaEvento(data).processaEvento(evento)
-            response['success'] = True
-            response['response'] = "Requisicao processada com sucesso."
-        except NameError as Undefined:
-            response['success'] = False
-            response['response'] = unicode(str(Undefined), errors='replace')
-            response['stackTrace'] = traceback.format_exc()
-        except Exception as e:
-            response['success'] = False
-            response['response'] = unicode(str(e), errors='replace')
-            response['stackTrace'] = traceback.format_exc()
+        data = json.loads(unicode(str(trata), errors='replace'))
+
+        retorno = {
+            'success': True,
+            'retorno': str(processaEvento(data).processaEvento(evento)),
+        }
     else:
-        response['success'] = False
-        response['response'] = "Nenhum dado recebido para processamento."
+        retorno = {
+            'success': False,
+            'retorno': "Nenhum dado recebido para processamento."
+        }
 
-    return response
+    return retorno
 
-if __name__ == "__main__":
-    response = main(sys.argv[1], sys.argv[2])
+
+try:
+    if __name__ == "__main__":
+        retorno = main(sys.argv[1], sys.argv[2])
+        response = {
+            'success' : retorno['success'],
+            'retorno' : retorno['retorno']
+        }
+except NameError as Undefined:
+    response['success'] = False
+    response['response'] = unicode(str(Undefined), errors='replace')
+    response['stackTrace'] = '<pre>' + traceback.format_exc() + '</pre>'
+except Exception as e:
+    response['success'] = False
+    response['response'] = unicode(str(e), errors='replace')
+    response['stackTrace'] = '<pre>' + traceback.format_exc() + '</pre>'
+finally:
     print json.dumps(response)
     if len(sys.argv) > 3:
         if sys.argv[3] == '--debug' and 'stackTrace' in response:
-            print "Stack Trace:\n"+ response['stackTrace']
+            print "Stack Trace:\n" + response['stackTrace']

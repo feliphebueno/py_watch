@@ -166,6 +166,77 @@ class processaDados:
             'del'   : deleted
         }
 
+    def getBranches(self, repositorioCod, branches_url):
+
+        dadosBranches = self.getDadosApi(branches_url)
+        branches = {}
+
+        for branch in dadosBranches:
+            branches[branch['name']] = self.setBranches(repositorioCod, branch)
+
+        return branches
+
+    def setBranches(self, repositorioCod, dados):
+        name = dados['name']
+
+        retorno = {
+            'branchNome': name
+        }
+
+        branch = self.con.execLinha(self.sql.getBranchSql(name))
+
+        if len(branch) > 0:
+            retorno['repositorioBranchCod'] = branch['repositorioBranchCod']
+            repositorioBranchCod = branch['repositorioBranchCod']
+        else:
+            repositorioBranchCod = CrudUtil('prod_t1').insert('repositorio_branch', {
+                'repositorioCod' : repositorioCod,
+                'repositorioBranchNome': name,
+                'repositorioBranchStatus': "A"
+            })
+
+            retorno['repositorioBranchCod'] = repositorioBranchCod
+
+        retorno['commits'] = {
+            dados['commit']['sha'] : self.getBranchCommits(repositorioBranchCod, dados['commit'])
+        }
+
+        return retorno
+
+    def getBranchCommits(self, repositorioBranchCod, dados):
+        sha = dados['sha']
+
+        retorno = {
+            'sha': sha
+        }
+
+        commit = self.con.execLinha(self.sql.getCommitSql(sha))
+
+        #commitexists
+        if len(commit) > 0:
+            retorno['commitCod'] = commit['commitCod']
+        else:
+            dadosCommit = self.getDadosApi(dados['url'])
+            contributor = self.getDadosUser(dadosCommit['author'])
+
+            commitDataHora = dadosCommit['commit']['author']['date']
+
+            repositorioBranchCommitCod = CrudUtil('prod_t1').insert('repositorio_branch_commit', {
+                'repositorioBranchCod' : repositorioBranchCod,
+                'contributorCod' : contributor['contributorCod'],
+                'repositorioBranchCommitSha': sha,
+                'repositorioBranchCommitMensagem' : dadosCommit['commit']['message'],
+                'repositorioBranchCommitUrl' : dadosCommit['html_url'],
+                'repositorioBranchCommitComentarios' : dadosCommit['commit']['comment_count'],
+                'repositorioBranchCommitAdicoes' : dadosCommit['stats']['additions'],
+                'repositorioBranchCommitRemocoes' : dadosCommit['stats']['deletions'],
+                'repositorioBranchCommitArquivos' : len(dadosCommit['files']),
+                'repositorioBranchCommitData' : commitDataHora[0:10] +' '+ commitDataHora[11:-4]
+            })
+
+            retorno['repositorioBranchCommitCod'] = repositorioBranchCommitCod
+
+        return retorno
 
     def enviaNotificacao(self, usuarioCod, titulo, descricao, warnLevel, link):
 
