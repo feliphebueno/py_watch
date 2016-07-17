@@ -18,6 +18,7 @@ class processaDados:
         pullRequest = data['pull_request']
         id          = pullRequest['id']
         name        = pullRequest['title']
+        merged      = 'M' if pullRequest['merged'] == True else 'N'
 
         retorno = {
             'titulo': name,
@@ -29,12 +30,11 @@ class processaDados:
         #Pull Request already exists
         if len(dadosPullRequest) > 0 :
             retorno['repositorioPullCod'] = dadosPullRequest['repositorioPullCod']
-            merged = 'M' if pullRequest['merged'] == 'true' else 'N'
 
-            if dadosPullRequest['repositorioPullStatus'] != merged :
-                CrudUtil('prod_t1').update('repositorio_pull', {'repositorioPullCod': dadosPullRequest['repositorioPullCod']}, {
-                    'repositorioPullStatus': "M"
-                })
+            CrudUtil('prod_t1').update('repositorio_pull', {'repositorioPullCod': dadosPullRequest['repositorioPullCod']}, {
+                'repositorioPullStatus': merged
+            })
+
         else:
             user = self.getDadosUser(pullRequest['user'])
             repo = self.getDadosRepo(data['repository'])
@@ -54,7 +54,7 @@ class processaDados:
                 'repositorioPullArquivosAlterados': pullRequest['changed_files'],
                 'repositorioPullData': pullRequest['created_at'][0:10],
                 'repositorioPullDataMerged': None if type(pullRequest['merged_at']) != str else pullRequest['merged_at'][0:10],
-                'repositorioPullStatus': 'M' if pullRequest['merged'] == 'true' else 'N',
+                'repositorioPullStatus': merged,
             })
 
             retorno['repositorioPullCod'] = repositorioPullCod
