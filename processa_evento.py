@@ -58,7 +58,7 @@ class processaEvento:
             for usuarioCod in usuarios:
                 self.processaDados.enviaNotificacao(usuarioCod, titulo, descricao, warnLevel, link)
 
-            return "OK"
+            return "OKZ"
         # Novo Push
         elif evento == 'push':
             repositorio = self.processaDados.getDadosRepo(dados['repository'])
@@ -82,7 +82,7 @@ class processaEvento:
             for usuarioCod in usuarios:
                 self.processaDados.enviaNotificacao(usuarioCod, titulo, descricao, warnLevel, link)
 
-            return "OK"
+            return "OKX"
            #Novo branch
         elif evento == 'create':
             if 'ref_type'in dados and dados['ref_type'] == "branch":
@@ -106,7 +106,7 @@ class processaEvento:
                 for usuarioCod in usuarios:
                     self.processaDados.enviaNotificacao(usuarioCod, titulo, descricao, warnLevel, link)
 
-                return "OK"
+                return "OKX"
         else:
             return "Evento desconhecido"
 

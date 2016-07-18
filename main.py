@@ -29,20 +29,16 @@
 
 import sys, json, traceback
 from processa_evento import processaEvento
+from flask import Flask, request
 
 __author__ = "Bueno, Feliphe <feliphezion@gmail.com>"
 __version__ = "2.0"
 
-response = {'success': "", 'response': ""}
-
-def main(payload, evento):
+def start(payload, evento):
     if payload and evento:
-        trata = payload.replace("'", '"').replace('*space*', " ")
-        data = json.loads(unicode(str(trata), errors='replace'))
-
         retorno = {
             'success': True,
-            'retorno': str(processaEvento(data).processaEvento(evento)),
+            'retorno': str(processaEvento(payload).processaEvento(evento)),
         }
     else:
         retorno = {
@@ -52,24 +48,36 @@ def main(payload, evento):
 
     return retorno
 
+app = Flask(__name__)
+@app.route("/", methods=['POST', "GET"])
+def main():
+    response = {'success': "", 'response': ""}
+    try:
+        #return
+        #sys.exit()
+        if __name__ == "__main__":
+            payload = request.get_json(True)
 
-try:
-    if __name__ == "__main__":
-        retorno = main(sys.argv[1], sys.argv[2])
-        response = {
-            'success' : retorno['success'],
-            'retorno' : retorno['retorno']
-        }
-except NameError as Undefined:
-    response['success'] = False
-    response['response'] = unicode(str(Undefined), errors='replace')
-    response['stackTrace'] = '<pre>' + traceback.format_exc() + '</pre>'
-except Exception as e:
-    response['success'] = False
-    response['response'] = unicode(str(e), errors='replace')
-    response['stackTrace'] = '<pre>' + traceback.format_exc() + '</pre>'
-finally:
-    print json.dumps(response)
-    if len(sys.argv) > 3:
-        if sys.argv[3] == '--debug' and 'stackTrace' in response:
-            print "Stack Trace:\n" + response['stackTrace']
+            retorno = start(payload, request.headers.get("Http-X-Github-Event"))
+            response = {
+                'success' : retorno['success'],
+                'retorno' : retorno['retorno']
+            }
+    except NameError as Undefined:
+        response['success'] = False
+        response['response'] = unicode(str(Undefined), errors='replace')
+        response['stackTrace'] = '<pre>' + traceback.format_exc() + '</pre>'
+    except Exception as e:
+        response['success'] = False
+        response['response'] = unicode(str(e), errors='replace')
+        response['stackTrace'] = '<pre>' + traceback.format_exc() + '</pre>'
+    finally:
+        if len(sys.argv) > 3:
+            if request.headers.get("--debug") and 'stackTrace' in response:
+                print "Stack Trace:\n" + response['stackTrace']
+
+        return str(response)
+
+if __name__ == "__main__":
+    app.run(host='localhost', port=8081, debug=True)
+    main()
