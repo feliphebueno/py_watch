@@ -49,20 +49,17 @@ def start(payload, evento):
     return retorno
 
 app = Flask(__name__)
-@app.route("/", methods=['POST', "GET"])
+@app.route("/", methods=['POST'])
 def main():
     response = {'success': "", 'response': ""}
     try:
-        #return
-        #sys.exit()
-        if __name__ == "__main__":
-            payload = request.get_json(True)
+        payload = request.get_json(True)
 
-            retorno = start(payload, request.headers.get("Http-X-Github-Event"))
-            response = {
-                'success' : retorno['success'],
-                'retorno' : retorno['retorno']
-            }
+        retorno = start(payload, request.headers.get("Http-X-Github-Event"))
+        response = {
+            'success' : retorno['success'],
+            'retorno' : retorno['retorno']
+        }
     except NameError as Undefined:
         response['success'] = False
         response['response'] = unicode(str(Undefined), errors='replace')
@@ -78,6 +75,9 @@ def main():
 
         return str(response)
 
+@app.route("/")
+def hello():
+    return "<h1>Python flask server http/1.1 200 OK</h1>"
+
 if __name__ == "__main__":
     app.run(host='localhost', port=8081, debug=True)
-    main()

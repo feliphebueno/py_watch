@@ -214,7 +214,8 @@ class processaDados:
 
         #commitexists
         if len(commit) > 0:
-            retorno['commitCod'] = commit['commitCod']
+            print str(commit)
+            retorno['repositorioBranchCommitCod'] = commit['repositorioBranchCommitCod']
         else:
             dadosCommit = self.getDadosApi(dados['url'])
             contributor = self.getDadosUser(dadosCommit['author'])
