@@ -34,4 +34,15 @@ def databases():
 
     return configs
 
+def apiKeys():
+    configs['apiKeys'] = {
+        'github' : {
+            'user'      : "user",
+            'password'  : "******"#or Githubtoken
+        }
+    }
+
+    return configs
+
 databases()
+apiKeys()
