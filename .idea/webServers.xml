@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="deda014a-3e7d-4d13-a03d-46953a633d1b" name="T1" url="http://www.sonne-ti.com.br/tron/">
+        <fileTransfer host="186.226.56.109" port="21" rootFolder="/public_html/tron">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
