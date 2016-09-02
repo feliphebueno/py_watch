@@ -19,5 +19,5 @@ import django.contrib.auth
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('CLU.urls')),
-django.contrib.auth.views.login
+
 ]
