@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from tron.models import *
+from stats.models import *
 
 
 # Create your views here.

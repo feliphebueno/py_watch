@@ -28,7 +28,6 @@ class File(models.Model):
     filetype = models.CharField(db_column='fileType', max_length=100)  # Field name made lowercase.
     filename = models.CharField(db_column='fileName', max_length=300)  # Field name made lowercase.
     md5 = models.CharField(max_length=300)
-    messageId = models.ForeignKey('Message', related_name='+')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -36,13 +35,13 @@ class File(models.Model):
 
 
 class Message(models.Model):
-    # messageid = models.CharField(db_column='messageId', max_length=50)  # Field name made lowercase.
+    messageid = models.CharField(db_column='messageId', max_length=50)  # Field name made lowercase.
     text = models.TextField()
     date = models.DateTimeField()
     chatid = models.ForeignKey(Chat, models.DO_NOTHING, db_column='chatId', blank=True, null=True)  # Field name made lowercase.
     userid = models.ForeignKey('User', models.DO_NOTHING, db_column='userId', blank=True, null=True)  # Field name made lowercase.
     pinned = models.IntegerField(blank=True, null=True)
-    file = models.IntegerField(blank=True, null=True)
+    fileid = models.ForeignKey(File, models.DO_NOTHING, db_column='fileId', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
